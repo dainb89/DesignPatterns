@@ -6,14 +6,14 @@ public class Program
 	public static void Main()
 	{
 		Beverage beverage = new Espresso();
-		var des = string.Join(", ", beverage.getDescription());
-		Console.WriteLine("Cafe: " + des + " ($" + beverage.cost() + ")");
-		Beverage beverage2 = new DarkRoast();
-		beverage2 = new Mocha(beverage2);
+        var des = string.Join(", ", beverage.getDescription());
+        Console.WriteLine("Cafe: " + des + " ($" + beverage.cost() + ")");
+        Beverage beverage2 = new DarkRoast();
         beverage2 = new Mocha(beverage2);
-		beverage2 = new Mocha(beverage2);
-		des = string.Join(", ", beverage2.getDescription());
-		Console.WriteLine("Cafe: " + des + " ($" + beverage2.cost() + ")");
+        beverage2 = new Mocha(beverage2);
+        beverage2 = new Mocha(beverage2);
+        des = string.Join(", ", beverage2.getDescription());
+        Console.WriteLine("Cafe: " + des + " ($" + beverage2.cost() + ")");
 	}
 }
 public enum Size { VENTI, GRANDE, TALL }
@@ -26,7 +26,7 @@ public abstract class Beverage {
     public virtual void setSize(Size s) { size = s; }
 }
 public abstract class CondimentDecorator: Beverage {
-    public Beverage beverage; //public abstract List<String> getDescription();
+    public Beverage beverage;
     public new Size getSize() { return beverage.getSize(); }
 	protected List<String> countDes(String des) {
 		var lstDes = beverage.getDescription();
@@ -75,9 +75,7 @@ public class HouseBlend: Beverage {
 }
 public class Mocha: CondimentDecorator {
     public Mocha(Beverage b) { beverage = b; }
-    public override List<String> getDescription() {
-		return countDes("Mocha");
-    }
+    public override List<String> getDescription() { return countDes("Mocha"); }
     public override double cost() {
         double cost = beverage.cost();
 	    var s = beverage.getSize();
