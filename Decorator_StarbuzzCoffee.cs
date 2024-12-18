@@ -24,13 +24,33 @@ public abstract class Beverage
     public virtual List<String> getDescription() { return new List<String>() { description }; }
     public abstract double cost();
     public Size getSize() { return size; }
-    public virtual void setSize(Size s) { size = s; }
+    public virtual void SetSize(Size s) { size = s; }
+}
+public class Decaf : Beverage
+{
+    public Decaf() { description = "Decaf"; }
+    public override double cost() { return 1.05; }
+}
+public class Espresso : Beverage
+{
+    public Espresso() { description = "Espresso"; }
+    public override double cost() { return 1.99; }
+}
+public class DarkRoast : Beverage
+{
+    public DarkRoast() { description = "DarkRoast"; }
+    public override double cost() { return 0.99; }
+}
+public class HouseBlend : Beverage
+{
+    public HouseBlend() { description = "House Blend Coffee"; }
+    public override double cost() { return .89; }
 }
 public abstract class CondimentDecorator : Beverage
 {
     public Beverage beverage;
     public new Size getSize() { return beverage.getSize(); }
-    protected List<String> countDes(String des)
+    protected List<String> CountDes(String des)
     {
         var lstDes = beverage.getDescription();
         for (int i = 0; i < lstDes.Count; i++)
@@ -41,9 +61,23 @@ public abstract class CondimentDecorator : Beverage
                 if (d.Contains(" "))
                 {
                     string[] subs = d.Split(' ');
-                    int c = Int32.Parse(subs[0]);
-                    c++;
-                    lstDes[i] = c.ToString() + " " + subs[1];
+                    if (des.Contains("Steamed Milk") && subs.Length < 3)
+                    {
+                        lstDes[i] = "2 " + d;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            int c = Int32.Parse(subs[0]);
+                            c++;
+                            lstDes[i] = c.ToString() + " " + subs[1];
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Wrong to parse " + subs[0]);
+                        }
+                    }
                 }
                 else lstDes[i] = "2 " + d;
                 return lstDes;
@@ -56,7 +90,7 @@ public abstract class CondimentDecorator : Beverage
 public class Soy : CondimentDecorator
 {
     public Soy(Beverage b) { beverage = b; }
-    public override List<String> getDescription() { return countDes("Soy"); }
+    public override List<String> getDescription() { return CountDes("Soy"); }
     public override double cost()
     {
         double cost = beverage.cost();
@@ -67,25 +101,10 @@ public class Soy : CondimentDecorator
         return cost;
     }
 }
-public class Espresso : Beverage
-{
-    public Espresso() { description = "Espresso"; }
-    public override double cost() { return 1.99; }
-}
-public class DarkRoast : Beverage
-{
-    public DarkRoast() { description = "DarkRoast"; }
-    public override double cost() { return 0.69; }
-}
-public class HouseBlend : Beverage
-{
-    public HouseBlend() { description = "House Blend Coffee"; }
-    public override double cost() { return .89; }
-}
 public class Mocha : CondimentDecorator
 {
     public Mocha(Beverage b) { beverage = b; }
-    public override List<String> getDescription() { return countDes("Mocha"); }
+    public override List<String> getDescription() { return CountDes("Mocha"); }
     public override double cost()
     {
         double cost = beverage.cost();
@@ -93,6 +112,34 @@ public class Mocha : CondimentDecorator
         if (s == Size.TALL) cost += .15;
         else if (s == Size.GRANDE) cost += .20;
         else if (s == Size.VENTI) cost += .25;
+        return cost;
+    }
+}
+public class Whip : CondimentDecorator
+{
+    public Whip(Beverage b) { beverage = b; }
+    public override List<String> getDescription() { return CountDes("Whip"); }
+    public override double cost()
+    {
+        double cost = beverage.cost();
+        var s = beverage.getSize();
+        if (s == Size.TALL) cost += .05;
+        else if (s == Size.GRANDE) cost += .10;
+        else if (s == Size.VENTI) cost += .15;
+        return cost;
+    }
+}
+public class SteamedMilk : CondimentDecorator
+{
+    public SteamedMilk(Beverage b) { beverage = b; }
+    public override List<String> getDescription() { return CountDes("Steamed Milk"); }
+    public override double cost()
+    {
+        double cost = beverage.cost();
+        var s = beverage.getSize();
+        if (s == Size.TALL) cost += .05;
+        else if (s == Size.GRANDE) cost += .10;
+        else if (s == Size.VENTI) cost += .15;
         return cost;
     }
 }
